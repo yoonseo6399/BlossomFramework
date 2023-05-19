@@ -1,6 +1,8 @@
 package blossomFrameWork.values
 
+import blossomFrameWork.input.toType
 import kotlin.reflect.KProperty
+import kotlin.reflect.cast
 
 class MutableValue<T:Any>(default:T, val name : String){
 
@@ -30,5 +32,28 @@ class MutableValue<T:Any>(default:T, val name : String){
     }
     operator fun getValue(nothing: Any?, property: KProperty<*>): T {
         return value
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun checkedSet(any: Any): Boolean{
+        if(any is String){
+            try {
+                value = when(value::class.simpleName){
+                    "Boolean" -> any.toBoolean() as T
+                    "Int" -> any.toInt() as T
+                    "Long" -> any.toLong() as T
+                    "Short" -> any.toShort() as T
+                    "String" -> any as T
+                    else -> return false
+                }
+            } catch (_: Exception) {}
+            return true
+        }
+        try {
+            value = any::class.cast(value::class) as T
+        }catch (_: Exception){
+            return false
+        }
+        return true
     }
 }

@@ -16,7 +16,7 @@ fun <T> Array<T>.toArrayList(): ArrayList<T> {
     return list
 }
 
-fun <T> T.isNullOr(action: Runnable): T{
+fun <T> T.ifIsNull(action: Runnable): T{
     if (this == null) {
         action.run()
     }
@@ -42,23 +42,23 @@ fun <T> T.alsoPrint(transform: ((T) -> String)? = null): T{
     return this
 }
 
-fun <T : Any?> T.withInfo(tag:String = "UnSet",transform: ((T) -> String)? = null): T{
+fun <T : Any?> T.withInfo(tag:String = "UnSet",name:String = "UnSet",transform: ((T) -> Any)? = null): T{
     //테그등록
     if (!BlossomSystem.activeInfoTags.keys.any{it == tag}) {
         BlossomSystem.activeInfoTags[tag] = false
     }
     if(BlossomSystem.informationForDebug && (BlossomSystem.activeInfoTags[tag]!! || BlossomSystem.activeContainTags.any{ tag.contains(it) })){
-        println("[Info for #$tag] ${this.insteadIf(transform!!(this)) {transform != null}}")
+        println("[Info for #${tag.insteadIf(name) {it == "Unset"}}] ${this.insteadIf(transform!!(this)) {transform != null}}")
     }
     return this
 }
 
-fun info(tag:String = "UnSet",message: (() -> String)) {
+fun info(tag:String = "UnSet",name:String = "UnSet",message: (() -> Any)) {
     if (!BlossomSystem.activeInfoTags.keys.any{it == tag}) {
         BlossomSystem.activeInfoTags[tag] = false
     }
     if(BlossomSystem.informationForDebug && (BlossomSystem.activeInfoTags[tag]!! || BlossomSystem.activeContainTags.any{ tag.contains(it) })){
-        println("[Info for #$tag] ${message()}")
+        println("[Info for #${tag.insteadIf(name) {it == "Unset"}}] ${message()}")
     }
 }
 
@@ -73,6 +73,12 @@ fun <T : Any?> T.insteadIf(or:T, predicate: (T) -> Boolean):T{
 }
 fun <T : Any?> T.insteadIfNull(or:T):T{
     return this ?: or
+}
+
+fun Boolean.ifTrue(action: () -> Unit){
+    if(this){
+        action()
+    }
 }
 
 fun String.between(start:String,end:String):String{

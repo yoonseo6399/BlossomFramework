@@ -1,6 +1,7 @@
 package blossomFrameWork.input
 
 import blossomFrameWork.*
+import code.CannotFindApplicationException
 import java.io.PrintStream
 import java.util.*
 
@@ -25,7 +26,7 @@ class Command(printStream: PrintStream = System.out, build: InputFormatBuilder.(
         val re = getCommandFromInput(input)
         if(re.second) re.first.forEach { runnableCommand ->
             try {
-              runnableCommand.execution(getCommandContext(input,runnableCommand).withInfo { it.toString() })
+              runnableCommand.execution(getCommandContext(input,runnableCommand).withInfo { "Executing command: " +it.runnableCommand.command.joinToString(" ") })
             } catch (e: IllegalArgumentException) {
                 if(re.first.size == 1){
                     System.err.println("${e.message}")
@@ -53,7 +54,7 @@ class Command(printStream: PrintStream = System.out, build: InputFormatBuilder.(
             a[runnableCommand] = 0
             for ((i,e) in inputArray.withIndex()) {
                 //info("CommandGetter") { "${runnableCommand.command[i]} != $e && ${!runnableCommand.command[i].contains(isINPUT)} == ${runnableCommand.command[i] != e && !runnableCommand.command[i].contains(isINPUT)}" }
-                if(runnableCommand.command[i] != e && !runnableCommand.command[i].contains(isINPUT)){
+                if(runnableCommand.command[i] != e && !runnableCommand.command[i].contains(isINPUT) || runnableCommand.command.size != inputArray.size){
                     continue@outer
                 }
                 a[runnableCommand] = a[runnableCommand]!!+1
@@ -71,11 +72,12 @@ class Command(printStream: PrintStream = System.out, build: InputFormatBuilder.(
         val args = ArrayList<String>()
         runnableCommand.command.filter { it.contains(isINPUT) }.forEach{
             val inputForArg = inputArray[runnableCommand.command.indexOf(it)] // 커스텀 ARG 에맞는 인풋을 가져오기
-            val b =it.slice(it.indexOf(":")+1..it.lastIndex).replace(isINPUT,"")
+            val b = it.slice(it.indexOf(":")+isINPUT.length+1..it.lastIndex)
+
             try {
                 inputForArg.toType(b)
                 args += inputForArg
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 throw IllegalArgumentException("User's input is not Requested Type input, Requested \"${it.until(":")}\":$b")
             }
         }

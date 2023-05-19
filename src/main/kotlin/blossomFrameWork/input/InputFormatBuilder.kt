@@ -58,7 +58,7 @@ class InputFormatBuilder {
     }
 }
 
-infix fun String.request(requestType: KClass<*>) = "$this:${Command.isINPUT}${requestType.java.typeName}"
+infix fun String.request(requestType: KClass<*>) = "$this:${Command.isINPUT}${requestType.java.simpleName}"
 
 
 class ArgumentTypes{ // 메테리얼처럼 상수로 바꿀가 생각중 String 말고 알규타입 강제하게
