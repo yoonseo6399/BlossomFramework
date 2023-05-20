@@ -1,5 +1,6 @@
 package blossomFrameWork.Console
 
+import blossomFrameWork.Frame.Frame
 import blossomFrameWork.Game
 import blossomFrameWork.application.Application
 import blossomFrameWork.info
@@ -34,8 +35,6 @@ object Console {
                                     CannotFindApplicationException("${context.argList[0]} is not defined in application")
                                 ).first()
                                 app::class.declaredMembers.first { it.name == context.argList[1] }.call(app)
-
-
                             }
                         }
                     }
@@ -60,6 +59,15 @@ object Console {
                                 }
                                 info(name = "Command") { prefix+"change the value : ${context.argList[0]} to ${context.argList[1]}" }
                             }
+                        }
+                    }
+                }
+            }
+            then("Frame"){
+                then("width" request String::class){
+                    then("height" request String::class){
+                        executes {
+                            Frame(it.argList[0].toInt(),it.argList[1].toInt())
                         }
                     }
                 }

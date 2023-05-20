@@ -1,11 +1,9 @@
 package code
 
 import blossomFrameWork.*
+import blossomFrameWork.Console.Console
 import blossomFrameWork.application.Application
-import blossomFrameWork.input.Command
-import blossomFrameWork.input.request
-import blossomFrameWork.values.MutableValue
-import kotlin.reflect.full.declaredMembers
+
 
 fun main() {
     Application.run(Code::class).main()
@@ -13,6 +11,7 @@ fun main() {
     Application.run(Calculator::class)
     Application.setupApplication("code")
 
+    Console.showUI(true)
 }
 
 class CannotFindApplicationException(msg : String): Exception(msg)
