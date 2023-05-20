@@ -1,11 +1,12 @@
 package blossomFrameWork.input
 
 import blossomFrameWork.*
-import code.CannotFindApplicationException
+import blossomFrameWork.Console.Console
+import java.io.InputStream
 import java.io.PrintStream
 import java.util.*
 
-class Command(printStream: PrintStream = System.out, build: InputFormatBuilder.() -> Unit) {
+class Command(val printStream: PrintStream = System.out, var inputStream: InputStream = System.`in`, build: InputFormatBuilder.() -> Unit) {
     private var prefix = ""
     private var thenString = " "
     private val runnableCommandMap = ArrayList<RunnableCommand>()//HashMap<String, HashMap<*,*>>()
@@ -20,8 +21,14 @@ class Command(printStream: PrintStream = System.out, build: InputFormatBuilder.(
 
     fun `in`(){
         //INPUT LOGIC
-        val scan = Scanner(System.`in`)
-        val input = scan.nextLine().split(thenString) //IO BLOCK // 사용자가 지정한걸로 쪼갠다
+        if(BlossomSystem.isOnConsole){
+            inputStream = Console.getInputStream()
+        }
+        val scan = Scanner(inputStream)
+        val input = scan.nextLine().split(thenString)
+        scan.close()
+
+
 
         val re = getCommandFromInput(input)
         if(re.second) re.first.forEach { runnableCommand ->
@@ -29,16 +36,16 @@ class Command(printStream: PrintStream = System.out, build: InputFormatBuilder.(
               runnableCommand.execution(getCommandContext(input,runnableCommand).withInfo { "Executing command: " +it.runnableCommand.command.joinToString(" ") })
             } catch (e: IllegalArgumentException) {
                 if(re.first.size == 1){
-                    System.err.println("${e.message}")
+                    error("${e.message}")
                 }
-                else println("[Commands] ${runnableCommand.declaration} is automatically disabled by User Input.")
+                else log("[Commands] ${runnableCommand.declaration} is automatically disabled by User Input.")
             }
         }
         else{
-            System.err.println("Cannot find any matches command")
-            System.err.println("Available commands:")
+            error("Cannot find any matches command")
+            error("Available commands:")
             re.first.forEach {
-                System.err.println("\t${it.command} : ${it.description}")
+                error("\t${it.command} : ${it.description}")
             }
         }
 

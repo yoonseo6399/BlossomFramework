@@ -32,13 +32,13 @@ fun <T : Any> T?.isNullException(exception : Throwable): T{
 
 fun <T> T.print(transform: ((T) -> String)? = null){
     if(transform == null) {
-        println(this)
-    }else println(transform(this))
+        log(this)
+    }else log(transform(this))
 }
 fun <T> T.alsoPrint(transform: ((T) -> String)? = null): T{
     if(transform == null) {
-        println(this)
-    }else println(transform(this))
+        log(this)
+    }else log(transform(this))
     return this
 }
 
@@ -48,7 +48,7 @@ fun <T : Any?> T.withInfo(tag:String = "UnSet",name:String = "UnSet",transform: 
         BlossomSystem.activeInfoTags[tag] = false
     }
     if(BlossomSystem.informationForDebug && (BlossomSystem.activeInfoTags[tag]!! || BlossomSystem.activeContainTags.any{ tag.contains(it) })){
-        println("[Info for #${tag.insteadIf(name) {it == "Unset"}}] ${this.insteadIf(transform!!(this)) {transform != null}}")
+        log("[Info for #${tag.insteadIf(name) {it == "Unset"}}] ${insteadIf(transform!!(this)) {transform != null}}")
     }
     return this
 }
@@ -58,7 +58,7 @@ fun info(tag:String = "UnSet",name:String = "UnSet",message: (() -> Any)) {
         BlossomSystem.activeInfoTags[tag] = false
     }
     if(BlossomSystem.informationForDebug && (BlossomSystem.activeInfoTags[tag]!! || BlossomSystem.activeContainTags.any{ tag.contains(it) })){
-        println("[Info for #${tag.insteadIf(name) {it == "Unset"}}] ${message()}")
+        log("[Info for #${tag.insteadIf(name) {it == "Unset"}}] ${message()}")
     }
 }
 
