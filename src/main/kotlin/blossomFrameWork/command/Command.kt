@@ -1,4 +1,4 @@
-package blossomFrameWork.input
+package blossomFrameWork.command
 
 import blossomFrameWork.*
 import blossomFrameWork.Console.Console
@@ -16,7 +16,7 @@ class Command(val printStream: PrintStream = System.out, var inputStream: InputS
     init{
         val temp = InputFormatBuilder()
         build(temp)
-        runnableCommandMap.addAll(temp.getCommands().withInfo("CommandBuild") { "User Added Command: ${it.transform { it.command }}" })
+        runnableCommandMap.addAll(temp.getCommands().withInfo(tag = "CommandBuild") { "User Added Command: ${it.transform { it.command }}" })
     }
 
     fun `in`(){
@@ -34,7 +34,8 @@ class Command(val printStream: PrintStream = System.out, var inputStream: InputS
         if(re.second) re.first.forEach { runnableCommand ->
             try {
               runnableCommand.execution(getCommandContext(input,runnableCommand).withInfo { "Executing command: " +it.runnableCommand.command.joinToString(" ") })
-            } catch (e: IllegalArgumentException) {
+            } catch (e: InputIsNotRequiredType) {
+
                 if(re.first.size == 1){
                     error("${e.message}")
                 }
@@ -85,7 +86,7 @@ class Command(val printStream: PrintStream = System.out, var inputStream: InputS
                 inputForArg.toType(b)
                 args += inputForArg
             } catch (_: NumberFormatException) {
-                throw IllegalArgumentException("User's input is not Requested Type input, Requested \"${it.until(":")}\":$b")
+                throw InputIsNotRequiredType("User's input is not Requested Type input, Requested \"${it.until(":")}\":$b")
             }
         }
         return CommandContext(runnableCommand,args,inputArray)
@@ -93,7 +94,7 @@ class Command(val printStream: PrintStream = System.out, var inputStream: InputS
     private fun getExecution(runnableCommand: RunnableCommand) =
         runnableCommand.execution
 }
-
+class InputIsNotRequiredType(msg : String) : Exception(msg)
 data class RunnableCommand(val command: List<String>, val execution: (CommandContext) -> Unit, val description: String = ""){
     val declaration = command.first()
 }

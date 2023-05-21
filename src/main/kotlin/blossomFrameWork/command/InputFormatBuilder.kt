@@ -1,4 +1,4 @@
-package blossomFrameWork.input
+package blossomFrameWork.command
 
 import blossomFrameWork.info
 import blossomFrameWork.isNullException
@@ -31,16 +31,16 @@ class InputFormatBuilder {
     private fun commandStringWithExecution(): List<Pair<String,Execution?>>{ // <- CommandLine
         val result = ArrayList<Pair<String,Execution?>>()
 
-        if(contexts.isEmpty()) return listOf(INFERIOR to execution).withInfo("CommandBuildContext") { "Inferior node $this returning execution" }
+        if(contexts.isEmpty()) return listOf(INFERIOR to execution).withInfo(tag = "CommandBuildContext") { "Inferior node $this returning execution" }
 
         for(context in contexts){
             context.second?.let { child ->
                 child.commandStringWithExecution().forEach { childCommands -> // transform 으로 바꿀수있을듯. 아닌가
                     if(childCommands.first == INFERIOR){ //child 가 Inferior node -> Execution 반환
 
-                        info("CommandBuildContext") { "Execution returning detected , adding ${childCommands.second}" }
+                        info(tag = "CommandBuildContext") { "Execution returning detected , adding ${childCommands.second}" }
                         result.add(context.first to childCommands.second)// execution 등록하기
-                    }else result.add(context.first + "." + childCommands.first to childCommands.second).withInfo("CommandBuildContext") { "Inferior Node is not My Child, running default operation" }
+                    }else result.add(context.first + "." + childCommands.first to childCommands.second).withInfo(tag = "CommandBuildContext") { "Inferior Node is not My Child, running default operation" }
                 }
             }
         }
@@ -50,11 +50,11 @@ class InputFormatBuilder {
         val build = InputFormatBuilder()
         builder(build)
         contexts.add(context to build)
-        info("CommandBuilderThen") { "then built on $context" }
+        info(tag = "CommandBuilderThen") { "then built on $context" }
     }
     fun executes(action: (CommandContext) -> Unit){
         this.execution = action
-        info("CommandBuilderExecutes") { "executes action : $action" }
+        info(tag = "CommandBuilderExecutes") { "executes action : $action" }
     }
 }
 

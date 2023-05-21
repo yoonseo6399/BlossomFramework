@@ -4,8 +4,9 @@ import blossomFrameWork.*
 import blossomFrameWork.Frame.Frame
 import blossomFrameWork.Frame.whenKeyPressed
 import blossomFrameWork.application.Application
-import blossomFrameWork.input.Command
-import blossomFrameWork.input.request
+import blossomFrameWork.application.callFunction
+import blossomFrameWork.command.Command
+import blossomFrameWork.command.request
 import blossomFrameWork.values.MutableValue
 import code.CannotFindApplicationException
 import kotlinx.coroutines.*
@@ -14,7 +15,6 @@ import java.awt.Dimension
 import java.awt.FlowLayout
 import java.awt.event.KeyEvent
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import javax.swing.*
 import javax.swing.event.DocumentEvent
@@ -27,27 +27,18 @@ import kotlin.reflect.full.declaredMembers
 object Console {
     fun showUI(loop:Boolean = false){
         Command{
-            then("run"){
-                then("game"){
-                    then("gameName" request String::class){
-                        executes { context ->
-
-                            val game = Application.AllClasses.first { it.simpleName == context.argList[0] }::class.annotations.first { it.annotationClass == Game::class }
-
-                        }
-                    }
-                }
-
-            }
             then("Application"){
                 then("run"){
                     then("name" request String::class){
                         then("functionName" request String::class){
                             executes {context ->
-                                val app = Application.applicationMap.get(context.argList[0]).isNullException(
-                                    CannotFindApplicationException("${context.argList[0]} is not defined in application")
-                                ).first()
-                                app::class.declaredMembers.first { it.name == context.argList[1] }.call(app)
+                                Application.applicationMap[context.argList[0]]
+                                    .isNullException(
+                                    CannotFindApplicationException("${context.argList[0]} is not defined in application"))
+                                    .first()::class.alsoPrint().callFunction(context.argList[1])
+                                info("call Application") { "Successfully called Function" }
+/*                                    .declaredMembers.first { it.name == context.argList[1] }.call(app)*/
+
                             }
                         }
                     }

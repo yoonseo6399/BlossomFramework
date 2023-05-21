@@ -42,23 +42,23 @@ fun <T> T.alsoPrint(transform: ((T) -> String)? = null): T{
     return this
 }
 
-fun <T : Any?> T.withInfo(tag:String = "UnSet",name:String = "UnSet",transform: ((T) -> Any)? = null): T{
+fun <T : Any?> T.withInfo(name: String = "UnSet", tag: String = "UnSet", transform: ((T) -> Any)? = null): T{
     //테그등록
     if (!BlossomSystem.activeInfoTags.keys.any{it == tag}) {
         BlossomSystem.activeInfoTags[tag] = false
     }
     if(BlossomSystem.informationForDebug && (BlossomSystem.activeInfoTags[tag]!! || BlossomSystem.activeContainTags.any{ tag.contains(it) })){
-        log("[Info for #${tag.insteadIf(name) {it == "Unset"}}] ${insteadIf(transform!!(this)) {transform != null}}")
+        log("[Info for #${tag.insteadIf(name) {it == "UnSet"}}] ${insteadIf(transform!!(this)) {transform != null}}")
     }
     return this
 }
 
-fun info(tag:String = "UnSet",name:String = "UnSet",message: (() -> Any)) {
+fun info(name: String = "UnSet", tag: String = "UnSet", message: () -> Any) {
     if (!BlossomSystem.activeInfoTags.keys.any{it == tag}) {
         BlossomSystem.activeInfoTags[tag] = false
     }
     if(BlossomSystem.informationForDebug && (BlossomSystem.activeInfoTags[tag]!! || BlossomSystem.activeContainTags.any{ tag.contains(it) })){
-        log("[Info for #${tag.insteadIf(name) {it == "Unset"}}] ${message()}")
+        log("[Info for #${tag.insteadIf(name) {it == "UnSet"}}] ${message()}")
     }
 }
 
@@ -71,14 +71,26 @@ if predicate is true then return or's value
 fun <T : Any?> T.insteadIf(or:T, predicate: (T) -> Boolean):T{
     return if(predicate(this)) or else this
 }
-fun <T : Any?> T.insteadIfNull(or:T):T{
+infix fun <T : Any> T?.insteadIfNull(or:T):T{
     return this ?: or
 }
+infix fun <T : Any> T?.insteadIfNull(or:()->T):T{
+    return this ?: or()
+}
 
-fun Boolean.ifTrue(action: () -> Unit){
+inline fun Boolean.ifTrue(action: () -> Unit){
     if(this){
         action()
     }
+}
+
+inline fun <T> Collection<T>.ifEmpty(action: () -> Unit) : Collection<T> {
+    this.isEmpty().ifTrue(action)
+    return this
+}
+inline fun <T> Collection<T>.ifNotEmpty(action: () -> Unit): Collection<T> {
+    this.isNotEmpty().ifTrue(action)
+    return this
 }
 
 fun String.between(start:String,end:String):String{
@@ -87,8 +99,6 @@ fun String.between(start:String,end:String):String{
 fun String.until(end:String):String{
     return this.substring(0, this.indexOf(end))
 }
-
-infix fun <T> ArrayList<T>.add(element: T) = add(element)
 fun <K, V> HashMap<K, V>.getKeysFromValue(value: V): List<K> {
     val dest = ArrayList<K>()
     for ((key, v) in this) {
@@ -100,4 +110,4 @@ fun <K, V> HashMap<K, V>.getKeysFromValue(value: V): List<K> {
 }
 
 
-operator fun <T> ArrayList<T>.plusAssign(element: T) { this.add(element)}
+operator fun <T> ArrayList<T>.plusAssign(element: T) { this.add(element) }

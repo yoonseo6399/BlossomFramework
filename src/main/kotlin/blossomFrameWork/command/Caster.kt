@@ -1,4 +1,4 @@
-package blossomFrameWork.input
+package blossomFrameWork.command
 
 
 fun String.toType(string: String) {
