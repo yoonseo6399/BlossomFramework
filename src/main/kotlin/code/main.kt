@@ -1,10 +1,7 @@
 package code
 
-import blossomFrameWork.*
-import blossomFrameWork.Console.Console
 import blossomFrameWork.application.Application
-import kotlinx.coroutines.*
-import java.io.ByteArrayInputStream
+import blossomFrameWork.getOrNull
 import java.util.Scanner
 
 
@@ -13,15 +10,34 @@ fun main() {
     Application.add(Code::class).main()
     Application.add(Calculator::class)
     Application.add(TEST::class)
-    Application.add(OneCard_Game::class)
+    Application.add(OneCardGame::class)
     Application.setupApplication("code")
 
+    val game = OneCardGame()
+    with(game){
+        new(2).let {
+            start()
+            val scan = Scanner(System.`in`)
+            while (true){
+                if(getNowTurnPlayer() == it[0]){
+                    while (!runTurn(it[0], it[0].deck.getOrNull(scan.nextInt()))) {
+                        println("false#0")
+                    }
+                    println("true#0")
+                }else{
+                    while (!runTurn(it[1], it[1].deck.getOrNull(scan.nextInt()))) {
+                        println("false#1")
+                    }
+                    println("true#1")
+                }
+            }
+        }
+
+    }
 
 
-
-    Console.showFrame()
-    Console.showUI(true)
-
+    //Console.showFrame()
+    //Console.showUI(true)
 
 
 

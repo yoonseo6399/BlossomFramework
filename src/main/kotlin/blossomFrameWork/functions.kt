@@ -1,5 +1,7 @@
 package blossomFrameWork
 
+import java.lang.Exception
+
 fun <T : Any,R: Any> List<T>.transform(transform: (T) -> R): ArrayList<R> {
     val list = ArrayList<R>()
     for ((i,e) in this.withIndex()) {
@@ -41,6 +43,11 @@ fun <T> T.alsoPrint(transform: ((T) -> String)? = null): T{
     }else log(transform(this))
     return this
 }
+
+fun <T> List<T>.getOrNull(index: Int):T?=
+    try {
+        get(index)
+    }catch (e: Exception){ null }
 
 fun <T : Any?> T.withInfo(name: String = "UnSet", tag: String = "UnSet", transform: ((T) -> Any)? = null): T{
     //테그등록
