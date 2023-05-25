@@ -134,7 +134,7 @@ class OneCardGame{
     }
     private fun randomCard(): Card {
         //mainDeck.shuffle()
-        return mainDeck[(Math.random()*mainDeck.size).toInt()].also(mainDeck::remove)
+        return randomCard(1).first()
     }
     private fun randomCard(limit : Int): ArrayList<Card> {
         //mainDeck.shuffle()
@@ -187,6 +187,12 @@ data class Player(val name: String,var deck: ArrayList<Card>){
         for ((i,card) in deck.withIndex()) {
             sendMessageWithOutln("\t$i-$card")
         }
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + deck.hashCode()
+        return result
     }
 }
 data class Card(val shape : CardType,val cardNumber: Int){

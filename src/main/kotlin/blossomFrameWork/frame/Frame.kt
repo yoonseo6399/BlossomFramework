@@ -1,4 +1,4 @@
-package blossomFrameWork.Frame
+package blossomFrameWork.frame
 
 import blossomFrameWork.log
 import java.awt.Component

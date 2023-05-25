@@ -1,8 +1,8 @@
 package blossomFrameWork.Console
 
 import blossomFrameWork.*
-import blossomFrameWork.Frame.Frame
-import blossomFrameWork.Frame.whenKeyPressed
+import blossomFrameWork.frame.Frame
+import blossomFrameWork.frame.whenKeyPressed
 import blossomFrameWork.application.Application
 import blossomFrameWork.application.callFunction
 import blossomFrameWork.command.Command
