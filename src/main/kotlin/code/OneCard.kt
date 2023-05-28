@@ -17,6 +17,7 @@ class OneCardGame{
     private val players = ArrayList<Player>()
     private val diedPlayers = ArrayList<Player>()
     private val livingPlayers = ArrayList<Player>()
+    private var turnDirection = 1
     var eatStack = 0
         private set
     private var turnPlayerN = 0
@@ -24,7 +25,10 @@ class OneCardGame{
     fun new(maxPlayer: Int): List<Player>{
         val playerL = ArrayList<Player>(maxPlayer)
         repeat(maxPlayer){
-            addPlayer(Player(it.toString(),randomCard(STARTING_CARD_COUNT)).also(playerL::add))
+            Player(it.toString(),randomCard(STARTING_CARD_COUNT)).
+            also(playerL::add).
+            also(livingPlayers::add).
+            also(players::add)
         }
         return playerL
     }
@@ -34,69 +38,53 @@ class OneCardGame{
 
         baseDeck += randomCard()
         players.forEach { it.showInterface(this) }
-
     }
 
     fun runTurn(player: Player,card: Card?): Boolean{
         if(player != getNowTurnPlayer()) return false // 자신의 턴이 아닌데 요청을 보내는 경우
 
-        if(card == null) { //
-
-            if(eatStack != 0){// 포기했으니 먹이기(먹을수있으면)
-                player.deck.addAll(randomCard(eatStack))
-                eatStack = 0
-                checkPlayerCardLimit(player)
-                nextTurn()
-                showUI()
-                return true
-            }
-
-            player.deck.add(randomCard())
+        if(card == null) {
+            if(eatStack != 0) player.deck.addAll(randomCard(eatStack)).also { eatStack = 0 } else player.deck.add(randomCard())
             checkPlayerCardLimit(player)
             nextTurn()
             showUI()
             return true
         }
+        if (
+            !player.deck.contains(card) ||
+            !(lastPublicCard() isMatchedWith card) ||
+            eatStack != 0 && !(baseDeck.last() canDefendedWith card)
+        ) return false
 
-        if(!player.deck.contains(card)) return false
-
-        if(!(baseDeck.last() isMatchedWith card)) return false
-        //유효성검사
-
-
-
-
-
-        if(eatStack != 0 && !(baseDeck.last() canDefendedWith card)){// 먹어야하는 상황이고 받아칠수있는 카드를 낸게 아닐떄
-            //player.deck.addAll(randomCard(eatStack))// 겹치는거 알지? 위랑? 메서드로 만들면 보기 좋을듯
-            //eatStack = 0
-            //checkPlayerCardLimit(player)
-            //nextTurn()
-            return false
-        }
 
         //공격카드면 먹기스텍 추가
         card.getAttackStat().takeIf { it != -1 }?.let { eatStack += it }
         //어빌리티 구현해야함ㅇㅇ
         baseDeck.add(card)
         player.deck.remove(card)
+
+
+
         if(player.deck.size <= 0) {
             broadcast("${player.name} won!")
             try {
                 gameEnd()
             } catch (_: Exception) {}
         }
+
+        //Abilities
         if(card.cardNumber == 13) {//한번 더냄
             showUI()
             return true
         }
+        if(card.cardNumber == 12) turnDirection *= -1
         if(card.cardNumber == 11) nextTurn()//차례 한번 건너뜀
         nextTurn()
         showUI()
         return true
     }
     private fun nextTurn(){
-        turnPlayerN++
+        turnPlayerN += turnDirection
         if(turnPlayerN > players.size-1) turnPlayerN = 0
         if(diedPlayers.contains(getNowTurnPlayer())) {
             nextTurn()
@@ -105,7 +93,6 @@ class OneCardGame{
     }
     fun showUI(){
         players.forEach { it.showInterface(this) }
-
     }
     private fun checkPlayerCardLimit(player: Player):Unit = if(player.deck.size > MAX_CARD) kill(player,"${player.name} has over the card Limit: $MAX_CARD") else Unit
 
@@ -118,19 +105,12 @@ class OneCardGame{
 
 
     fun broadcast(msg: String){
-        players.forEach{ it.sendMessage(msg) }
-    }
-    fun broadcastToDied(msg: String){
-        diedPlayers.forEach{ it.sendMessage(msg) }
+        players.forEach { it.sendMessage(msg) }
     }
     private fun kill(player: Player,reason: String = "None"){
         livingPlayers.remove(player)
         diedPlayers.add(player)
         player.sendMessage("you died: $reason")
-    }
-    private fun addPlayer(player: Player){
-        players.add(player)
-        livingPlayers.add(player)
     }
     private fun randomCard(): Card {
         //mainDeck.shuffle()

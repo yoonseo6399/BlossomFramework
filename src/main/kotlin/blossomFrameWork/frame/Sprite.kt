@@ -2,12 +2,15 @@ package blossomFrameWork.frame
 
 import blossomFrameWork.frame.abstraction.Workable
 import kotlinx.coroutines.*
+import java.awt.Graphics
+import java.awt.Image
+import java.lang.RuntimeException
 
 class Sprite : Workable {
-    val location = Location.getDefault
+    var location = Location.getDefault
     val priority = 0
     var hitbox = HitBox.NONE
-    //val img
+    var img: Image? = null
     val name = "unknown"
     override val workMap = HashMap<String, Job>()
     override val workScope = CoroutineScope(Dispatchers.Main + Job() + CoroutineName("Sprite:$name"))
@@ -30,4 +33,9 @@ class Sprite : Workable {
     fun update(){
         TODO("Update Function")
     }
+}
+
+fun Graphics.drawSprite(sprite: Sprite){
+    if(sprite.img == null) throw RuntimeException("Sprite's img is null")
+    drawImage(sprite.img,sprite.location.x.toInt(),sprite.location.y.toInt(),null)
 }

@@ -1,8 +1,6 @@
 package code
 
 import blossomFrameWork.application.Application
-import blossomFrameWork.getOrNull
-import java.util.Scanner
 
 
 fun main() {
@@ -11,9 +9,10 @@ fun main() {
     Application.add(Calculator::class)
     Application.add(TEST::class)
     Application.add(OneCardGame::class)
+    Application.add(NewBackBoard::class)
     Application.setupApplication("code")
 
-    val game = OneCardGame()
+/*    val game = OneCardGame()
     with(game){
         new(2).let {
             start()
@@ -33,7 +32,7 @@ fun main() {
             }
         }
 
-    }
+    }*/
 
 
     //Console.showFrame()
