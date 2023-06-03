@@ -1,7 +1,7 @@
 package blossomFrameWork.command
 
 import blossomFrameWork.info
-import blossomFrameWork.isNullException
+import blossomFrameWork.functions.isNullException
 import blossomFrameWork.withInfo
 import kotlin.reflect.KClass
 

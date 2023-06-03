@@ -1,7 +1,7 @@
 package blossomFrameWork.reinforcedStackTrace
 
-import blossomFrameWork.toArrayList
-import blossomFrameWork.transform
+import blossomFrameWork.functions.toArrayList
+import blossomFrameWork.functions.transform
 
 class Trace(val stackTrace: Array<StackTraceElement>) {
 

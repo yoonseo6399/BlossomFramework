@@ -1,10 +1,10 @@
 package blossomFrameWork.exceptions
 
-import blossomFrameWork.insteadIf
+import blossomFrameWork.functions.insteadIf
 import blossomFrameWork.reinforcedStackTrace.toTrace
-import blossomFrameWork.toArrayList
-import blossomFrameWork.transform
-import blossomFrameWork.work
+import blossomFrameWork.functions.toArrayList
+import blossomFrameWork.functions.transform
+import blossomFrameWork.functions.work
 import java.util.*
 import kotlin.Exception
 

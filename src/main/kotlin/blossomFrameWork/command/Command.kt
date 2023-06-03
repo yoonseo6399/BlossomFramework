@@ -2,6 +2,7 @@ package blossomFrameWork.command
 
 import blossomFrameWork.*
 import blossomFrameWork.Console.Console
+import blossomFrameWork.functions.*
 import java.io.InputStream
 import java.io.PrintStream
 import java.util.*

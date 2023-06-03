@@ -2,7 +2,7 @@
 
 package blossomFrameWork.runCode
 
-import blossomFrameWork.isNullException
+import blossomFrameWork.functions.isNullException
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
