@@ -35,7 +35,6 @@ class OneCardGame{
 
     fun start(){
         broadcast("Game started, your Deck")
-
         baseDeck += randomCard()
         players.forEach { it.showInterface(this) }
     }

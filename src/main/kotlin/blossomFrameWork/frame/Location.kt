@@ -1,9 +1,14 @@
 package blossomFrameWork.frame
 
-data class Location(var x: Double, var y: Double) {
+open class Location(var x: Double, var y: Double) {
+    constructor(x: Int,y: Int): this(x.toDouble(),y.toDouble())
     companion object{
         val getDefault: Location
             get() = Location(0.0, 0.0)
+    }
+
+    override fun toString(): String {
+        return "Loc:(x:$x,y:$y)"
     }
 
     fun isZero(): Boolean = x == 0.0 && y == 0.0
@@ -44,5 +49,4 @@ data class Location(var x: Double, var y: Double) {
         this.x /= num
         this.y /= num
     }
-
 }

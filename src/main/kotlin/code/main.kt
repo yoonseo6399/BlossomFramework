@@ -1,15 +1,18 @@
 package code
 
+import blossomFrameWork.BlossomSystem
 import blossomFrameWork.application.Application
 
 
 fun main() {
 
+    BlossomSystem.informationForDebug = true
+
     Application.add(Code::class).main()
     Application.add(Calculator::class)
     Application.add(TEST::class)
     Application.add(OneCardGame::class)
-    Application.add(NewBackBoard::class)
+    Application.add(NewBackBoard2::class)
     Application.setupApplication("code")
 
 /*    val game = OneCardGame()

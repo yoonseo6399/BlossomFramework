@@ -57,3 +57,5 @@ fun <K, V> HashMap<K, V>.getKeysFromValue(value: V): List<K> {
 
 
 operator fun <T> ArrayList<T>.plusAssign(element: T) { this.add(element) }
+
+infix fun Int.inRandom(to:Int):Int = ((Math.random()*(this+to))+this).toInt()

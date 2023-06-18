@@ -10,47 +10,24 @@ import javax.swing.JFrame
 import javax.swing.JTextField
 
 class Frame(private val width: Int, private val height: Int) : JFrame() {
-    val graphic : Graphics
+    val sprites = ArrayList<Sprite>()
     init {
+        percentageLocation.screenSize = Location(height,width)
         setSize(width,height)
         layout= FlowLayout()
-        this.graphic = graphics
+        isVisible = true
     }
 
     override fun paint(g: Graphics) {
-        super.paint(g)
+        g.clearRect(0, 0, width, height)
+        sprites.forEach { it.paint(g) }
+    }
+
+    override fun paintComponents(g: Graphics) {
+        sprites.forEach { it.paint(g) }
     }
 }
 
-object Listener: ActionListener{
-    override fun actionPerformed(e: ActionEvent?) {
-        log("Action")
-    }
-}
-fun JButton.createActionBlock(block: (ActionEvent) -> Unit){
-    this.addActionListener(block)
-}
-fun JTextField.whenKeyTyped(block: (KeyEvent) -> Unit){
-    this.addKeyListener(object : KeyAdapter() {
-        override fun keyPressed(e: KeyEvent) {
-            block(e)
-        }
-    })
-}
-fun Component.whenKeyTyped(keyId: Int, block: (KeyEvent) -> Unit){
-    this.addKeyListener(object : KeyAdapter() {
-        override fun keyTyped(e: KeyEvent) {
-            if (e.keyCode == keyId) block(e)
-        }
-    })
-}
-fun Component.whenKeyPressed(keyId: Int, block: (KeyEvent) -> Unit){
-    this.addKeyListener(object : KeyAdapter() {
-        override fun keyPressed(e: KeyEvent) {
-            if (e.keyCode == keyId) block(e)
-        }
-    })
-}
 fun Component.whenKeyPressed( block: (KeyEvent) -> Unit){
     this.addKeyListener(object : KeyAdapter() {
         override fun keyPressed(e: KeyEvent) {

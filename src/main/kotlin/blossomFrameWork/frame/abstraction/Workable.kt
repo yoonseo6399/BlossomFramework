@@ -10,9 +10,10 @@ interface Workable {
     fun addTask(name: String,coroutine : suspend CoroutineScope.() -> Unit){
         workMap[name] = workScope.launch{ coroutine(this) }
     }
-    fun cancelTask(name: String){
-        workMap[name] ?: throw IllegalStateException("Cannot find running coroutine has $name")
+    fun cancelTask(name: String): Boolean{
+        workMap[name] ?: return false
         workMap[name]!!.cancel()
         workMap.remove(name)
+        return true
     }
 }

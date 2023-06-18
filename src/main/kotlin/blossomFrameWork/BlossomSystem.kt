@@ -48,7 +48,8 @@ fun info(name: String = "UnSet", tag: String = "UnSet", message: () -> Any) {
     if (!BlossomSystem.activeInfoTags.keys.any{it == tag}) {
         BlossomSystem.activeInfoTags[tag] = false
     }
-    if(BlossomSystem.informationForDebug && (BlossomSystem.activeInfoTags[tag]!! || BlossomSystem.activeContainTags.any{ tag.contains(it) })){
+    if(BlossomSystem.informationForDebug
+        && (tag == "UnSet" || (BlossomSystem.activeInfoTags[tag]!! || BlossomSystem.activeContainTags.any{ tag.contains(it) }))){
         log("[Info#${tag.insteadIf(name) { it == "UnSet" }}] ${message()}")
     }
 }
