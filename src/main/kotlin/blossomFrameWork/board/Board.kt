@@ -24,4 +24,5 @@ class Board(width: Int,height: Int) : JFrame() {
         g.drawRect(location.x+3,location.y+3,width-6,height-6)
         //spriteList.forEach { it.paint(g) }
     }
+
 }

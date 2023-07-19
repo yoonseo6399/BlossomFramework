@@ -2,8 +2,11 @@ package blossomFrameWork.board
 
 import blossomFrameWork.functions.alsoPrint
 import blossomFrameWork.info
+import com.sun.java.accessibility.util.AWTEventMonitor
 import kotlinx.coroutines.*
 import java.awt.*
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.ImageIcon
 import javax.swing.JLabel
 import javax.swing.SwingUtilities
@@ -12,17 +15,34 @@ import kotlin.system.measureNanoTime
 import kotlin.system.measureTimeMillis
 import kotlin.time.measureTime
 
-class Entity(imagePath: String) : JLabel() {
-    val image = ImageIcon(imagePath).image
+class Entity(imageIcon: ImageIcon) : JLabel() {
+    constructor(path: String): this(ImageIcon(path))
+    val image = imageIcon.image
     private var velocity_x = 0.0
     private var velocity_y = 0.0
-    private var velocityCorutine : Job? = null
-    private val movingScope = CoroutineScope(Dispatchers.Default + CoroutineName("Moving Task") + Job())
+    var whenClicked : (() -> Unit)? = null
+    var velocityCorutine : Job? = null
+    val movingScope = CoroutineScope(Dispatchers.Default + CoroutineName("Moving Task") + Job())
     init {
         size = Dimension(image.getWidth(null), image.getHeight(null))
         preferredSize = Dimension(image.getWidth(null), image.getHeight(null))
         layout = null
-        icon = ImageIcon(imagePath)
+        icon = imageIcon
+        val listener = object : MouseAdapter(){
+            override fun mouseClicked(e: MouseEvent) {
+                println("click")
+                if(e.source.alsoPrint() === this@Entity.alsoPrint()) {
+                    println("yeah")
+                    whenClicked!!()
+                }
+                println(this@Entity.mouseListeners.size)
+                GlobalScope.launch {
+                    delay(1000)
+                    println(this@Entity.mouseListeners.size)
+                }
+            }
+        }
+        addMouseListener(listener)
     }
 
     fun applyVelocity(x:Double,y:Double){
@@ -32,12 +52,11 @@ class Entity(imagePath: String) : JLabel() {
 
         velocityCorutine = movingScope.launch {
             while (velocity_x.absoluteValue + velocity_y.absoluteValue > 0.5){
-                runBlocking {
-                    smoothMove(location.x + velocity_x.toInt(),location.y+velocity_y.toInt(),10)
-                }
+
+                    smoothMove(location.x + velocity_x.toInt(),location.y+velocity_y.toInt(),5)
+
                 //delay(100)
 
-                info { location }
                 SwingUtilities.invokeLater {
                     repaint()
                 }
