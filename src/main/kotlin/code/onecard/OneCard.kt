@@ -1,4 +1,4 @@
-package code
+package code.onecard
 
 import java.lang.Exception
 import java.lang.IllegalArgumentException
@@ -12,9 +12,9 @@ class OneCardGame{
 
     }
 
-    private val mainDeck = Card.getDeck() // 남은카드
-    private val baseDeck = ArrayList<Card>() // 나온카드
-    private val players = ArrayList<Player>()
+    val mainDeck = Card.getDeck() // 남은카드
+    val baseDeck = ArrayList<Card>() // 나온카드
+    val players = ArrayList<Player>()
     private val diedPlayers = ArrayList<Player>()
     private val livingPlayers = ArrayList<Player>()
     private var turnDirection = 1
@@ -39,7 +39,8 @@ class OneCardGame{
         players.forEach { it.showInterface(this) }
     }
 
-    fun runTurn(player: Player,card: Card?): Boolean{
+    fun runTurn(player: Player, card: Card?): Boolean{
+        println("43")
         if(player != getNowTurnPlayer()) return false // 자신의 턴이 아닌데 요청을 보내는 경우
 
         if(card == null) {
@@ -106,7 +107,7 @@ class OneCardGame{
     fun broadcast(msg: String){
         players.forEach { it.sendMessage(msg) }
     }
-    private fun kill(player: Player,reason: String = "None"){
+    private fun kill(player: Player, reason: String = "None"){
         livingPlayers.remove(player)
         diedPlayers.add(player)
         player.sendMessage("you died: $reason")
@@ -174,7 +175,7 @@ data class Player(val name: String,var deck: ArrayList<Card>){
         return result
     }
 }
-data class Card(val shape : CardType,val cardNumber: Int){
+data class Card(val shape : CardType, val cardNumber: Int){
     companion object{
         fun getDeck(): ArrayList<Card> {
             val deck = ArrayList<Card>(60)
@@ -221,11 +222,11 @@ data class Card(val shape : CardType,val cardNumber: Int){
 
     override fun toString(): String {
         return when(cardNumber) {
-            1 -> "$shape:A"
-            11 -> "$shape:J"
-            12 -> "$shape:Q"
-            13 -> "$shape:K"
-            else -> "$shape:$cardNumber"
+            1 ->    "A${shape.toString().slice(0..0)}"
+            11 ->   "J${shape.toString().slice(0..0)}"
+            12 ->   "Q${shape.toString().slice(0..0)}"
+            13 ->   "K${shape.toString().slice(0..0)}"
+            else -> "$cardNumber${shape.toString().slice(0..0)}"
         }
     }
 
